@@ -18,14 +18,14 @@ from features import compute_window_features
 # Model
 # =============================
 
-ml_model = tf.keras.models.load_model("model/model.keras")
+ml_model = tf.keras.models.load_model("models/model.keras")
 
 
 # =============================
 # MediaPipe model
 # =============================
 
-MODEL_PATH = "face_landmarker_v2_with_blendshapes.task"
+MODEL_PATH = "models/face_landmarker_v2_with_blendshapes.task"
 
 
 # =============================
