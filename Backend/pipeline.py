@@ -1,5 +1,6 @@
 import cv2
 import time
+import base64
 import numpy as np
 import tensorflow as tf
 from collections import deque
@@ -43,6 +44,9 @@ window = deque(maxlen=MAX_FRAMES)
 
 WINDOW_TICK_FRAMES = 5
 frame_count = 0
+
+VIDEO_FRAME_MAX_WIDTH = 640
+VIDEO_JPEG_QUALITY = 70
 
 
 # =============================
@@ -154,6 +158,26 @@ def run_pipeline(stop_event: threading.Event):
 
             h, w = frame_bgr.shape[:2]
 
+            if w > VIDEO_FRAME_MAX_WIDTH:
+                scale = VIDEO_FRAME_MAX_WIDTH / float(w)
+                preview_frame = cv2.resize(
+                    frame_bgr,
+                    (VIDEO_FRAME_MAX_WIDTH, int(h * scale)),
+                    interpolation=cv2.INTER_AREA,
+                )
+            else:
+                preview_frame = frame_bgr
+
+            encoded_ok, encoded_buffer = cv2.imencode(
+                ".jpg",
+                preview_frame,
+                [int(cv2.IMWRITE_JPEG_QUALITY), VIDEO_JPEG_QUALITY],
+            )
+
+            video_frame = None
+            if encoded_ok:
+                video_frame = base64.b64encode(encoded_buffer).decode("ascii")
+
 
         # ---------------------------
         # MediaPipe FaceMesh
@@ -251,6 +275,7 @@ def run_pipeline(stop_event: threading.Event):
             latest_frame_data.update({
 
                 "timestamp": timestamp_ms,
+                "video_frame": video_frame,
 
                 "signals": signals,
 

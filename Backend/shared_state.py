@@ -3,6 +3,7 @@ from typing import Any, Dict
 
 latest_frame_data: Dict[str,Any] = {
     "timestamp": None,
+    "video_frame": None,
     "signals": None,
     "model": None,
     "features": None,

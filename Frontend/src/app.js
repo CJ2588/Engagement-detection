@@ -5,7 +5,7 @@ import { connectWS } from "./utils/wsClient";
 
 export default function App() {
   const [frames, setFrames] = useState([]);
-
+  const [videoFrame, setVideoFrame] = useState(null);
   const [fps, setFps] = useState(0);
   const [latency, setLatency] = useState({ capture: 0, facemesh: 0, features: 0, model: 0 });
   const [resolution, setResolution] = useState({ w: 640, h: 480 });
@@ -14,7 +14,10 @@ export default function App() {
 
   useEffect(() => {
     const ws = connectWS((data) => {
-      setFrames((prev) => [...prev.slice(-99), data]); // keep last 100 frames
+      const { video_frame: incomingVideoFrame, ...chartFrame } = data;
+
+      setFrames((prev) => [...prev.slice(-99), chartFrame]);
+      setVideoFrame(incomingVideoFrame ? `data:image/jpeg;base64,${incomingVideoFrame}` : null);
       setFps(data.fps ?? 0);
       setLatency(data.latency ?? { capture: 0, facemesh: 0, features: 0, model: 0 });
       setStatus(data.status ?? "starting");
@@ -67,7 +70,7 @@ export default function App() {
             Real-Time Engagement Dashboard
           </h1>
           <p style={{ maxWidth: 760, fontSize: 18, lineHeight: 1.6, margin: 0, color: "rgba(246,251,255,0.86)" }}>
-            Track your live inference session with a clearer split between session health, camera context, and the scrolling signal history.
+            Watch the live camera session, inspect current health badges, and scroll through signal history without losing the main page context.
           </p>
         </div>
       </header>
@@ -94,6 +97,114 @@ export default function App() {
               gap: 20,
             }}
           >
+            <div
+              style={{
+                padding: 22,
+                borderRadius: 28,
+                background: "linear-gradient(180deg, rgba(12,38,58,0.98), rgba(22,64,87,0.94))",
+                boxShadow: "0 24px 60px rgba(8, 24, 38, 0.24)",
+                color: "#f3fbff",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "flex-start", marginBottom: 18 }}>
+                <div>
+                  <div style={{ fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(243,251,255,0.62)" }}>
+                    Camera Panel
+                  </div>
+                  <div style={{ fontSize: 28, fontWeight: 700, marginTop: 4 }}>{panelTitle}</div>
+                </div>
+                <div style={{ fontSize: 14, color: "rgba(243,251,255,0.72)" }}>
+                  {resolution.w} x {resolution.h}
+                </div>
+              </div>
+
+              <div
+                style={{
+                  minHeight: 360,
+                  borderRadius: 24,
+                  overflow: "hidden",
+                  position: "relative",
+                  background:
+                    "radial-gradient(circle at 20% 20%, rgba(214,162,79,0.4), transparent 26%), linear-gradient(145deg, #173f5d 0%, #091a2a 100%)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  display: "flex",
+                  alignItems: "flex-end",
+                }}
+              >
+                {videoFrame ? (
+                  <img
+                    src={videoFrame}
+                    alt="Live camera stream"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : null}
+
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "linear-gradient(180deg, rgba(255,255,255,0.04), transparent 30%, rgba(6,16,24,0.34) 100%)",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 18,
+                    left: 18,
+                    display: "flex",
+                    gap: 10,
+                    alignItems: "center",
+                    padding: "8px 12px",
+                    borderRadius: 999,
+                    background: "rgba(8,18,29,0.46)",
+                    backdropFilter: "blur(8px)",
+                    zIndex: 1,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: "50%",
+                      background: status === "running" ? "#3ddc97" : "#f0b24f",
+                      boxShadow: `0 0 14px ${status === "running" ? "#3ddc97" : "#f0b24f"}`,
+                    }}
+                  />
+                  <span style={{ fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                    {status === "running" ? "Live Video Feed" : "No Live Video Frame"}
+                  </span>
+                </div>
+
+                <div
+                  style={{
+                    position: "relative",
+                    zIndex: 1,
+                    width: "100%",
+                    padding: 22,
+                    display: "grid",
+                    gap: 10,
+                    background: "linear-gradient(180deg, transparent, rgba(3,10,16,0.82))",
+                  }}
+                >
+                  <div style={{ fontSize: 18, fontWeight: 700 }}>
+                    {latestFrame?.model
+                      ? `Engagement ${latestFrame.model.engagement.toFixed(2)} | Intensity ${latestFrame.model.intensity.toFixed(2)}`
+                      : "Waiting for the first encoded camera frame"}
+                  </div>
+                  <div style={{ maxWidth: 580, lineHeight: 1.6, color: "rgba(243,251,255,0.78)" }}>
+                    The stream now arrives with the websocket metrics feed, so this panel can show the live camera session and the current model output at the same time.
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div
               style={{
                 padding: 22,
@@ -154,99 +265,6 @@ export default function App() {
                   Pipeline error: {error}
                 </p>
               ) : null}
-            </div>
-
-            <div
-              style={{
-                padding: 22,
-                borderRadius: 28,
-                background: "linear-gradient(180deg, rgba(12,38,58,0.98), rgba(22,64,87,0.94))",
-                boxShadow: "0 24px 60px rgba(8, 24, 38, 0.24)",
-                color: "#f3fbff",
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "flex-start", marginBottom: 18 }}>
-                <div>
-                  <div style={{ fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(243,251,255,0.62)" }}>
-                    Camera Panel
-                  </div>
-                  <div style={{ fontSize: 28, fontWeight: 700, marginTop: 4 }}>{panelTitle}</div>
-                </div>
-                <div style={{ fontSize: 14, color: "rgba(243,251,255,0.72)" }}>
-                  {resolution.w} x {resolution.h}
-                </div>
-              </div>
-
-              <div
-                style={{
-                  minHeight: 360,
-                  borderRadius: 24,
-                  overflow: "hidden",
-                  position: "relative",
-                  background:
-                    "radial-gradient(circle at 20% 20%, rgba(214,162,79,0.4), transparent 26%), linear-gradient(145deg, #173f5d 0%, #091a2a 100%)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  display: "flex",
-                  alignItems: "flex-end",
-                }}
-              >
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background:
-                      "linear-gradient(180deg, rgba(255,255,255,0.04), transparent 30%, rgba(6,16,24,0.34) 100%)",
-                  }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 18,
-                    left: 18,
-                    display: "flex",
-                    gap: 10,
-                    alignItems: "center",
-                    padding: "8px 12px",
-                    borderRadius: 999,
-                    background: "rgba(8,18,29,0.46)",
-                    backdropFilter: "blur(8px)",
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: "50%",
-                      background: status === "running" ? "#3ddc97" : "#f0b24f",
-                      boxShadow: `0 0 14px ${status === "running" ? "#3ddc97" : "#f0b24f"}`,
-                    }}
-                  />
-                  <span style={{ fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                    {status === "running" ? "Live Metrics Feed" : "No Live Video Frame"}
-                  </span>
-                </div>
-
-                <div
-                  style={{
-                    position: "relative",
-                    zIndex: 1,
-                    width: "100%",
-                    padding: 22,
-                    display: "grid",
-                    gap: 10,
-                    background: "linear-gradient(180deg, transparent, rgba(3,10,16,0.82))",
-                  }}
-                >
-                  <div style={{ fontSize: 18, fontWeight: 700 }}>
-                    {latestFrame?.model
-                      ? `Engagement ${latestFrame.model.engagement.toFixed(2)} | Intensity ${latestFrame.model.intensity.toFixed(2)}`
-                      : "Live camera frames are not currently sent to the frontend"}
-                  </div>
-                  <div style={{ maxWidth: 580, lineHeight: 1.6, color: "rgba(243,251,255,0.78)" }}>
-                    This panel is styled to host the live stream area. Right now your backend websocket only sends metrics, so the layout shows session state and model output while keeping the stream slot ready for a future frame endpoint.
-                  </div>
-                </div>
-              </div>
             </div>
           </section>
 
