@@ -7,7 +7,12 @@ export default function App() {
   const [frames, setFrames] = useState([]);
   const [videoFrame, setVideoFrame] = useState(null);
   const [fps, setFps] = useState(0);
-  const [latency, setLatency] = useState({ capture: 0, facemesh: 0, features: 0, model: 0 });
+  const [latency, setLatency] = useState({
+    capture: 0,
+    facemesh: 0,
+    features: 0,
+    model: 0,
+  });
   const [resolution, setResolution] = useState({ w: 640, h: 480 });
   const [status, setStatus] = useState("starting");
   const [error, setError] = useState(null);
@@ -17,9 +22,15 @@ export default function App() {
       const { video_frame: incomingVideoFrame, ...chartFrame } = data;
 
       setFrames((prev) => [...prev.slice(-99), chartFrame]);
-      setVideoFrame(incomingVideoFrame ? `data:image/jpeg;base64,${incomingVideoFrame}` : null);
+      setVideoFrame(
+        incomingVideoFrame
+          ? `data:image/jpeg;base64,${incomingVideoFrame}`
+          : null,
+      );
       setFps(data.fps ?? 0);
-      setLatency(data.latency ?? { capture: 0, facemesh: 0, features: 0, model: 0 });
+      setLatency(
+        data.latency ?? { capture: 0, facemesh: 0, features: 0, model: 0 },
+      );
       setStatus(data.status ?? "starting");
       setError(data.error ?? null);
       if (data.resolution) {
@@ -32,13 +43,18 @@ export default function App() {
 
   const latestFrame = frames[frames.length - 1];
   const panelTitle = status === "running" ? "Live Session" : "Awaiting Stream";
-  const statusTone = error ? "#b42318" : status === "running" ? "#1f7a5a" : "#916f1f";
+  const statusTone = error
+    ? "#b42318"
+    : status === "running"
+      ? "#1f7a5a"
+      : "#916f1f";
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(180deg, #edf5f8 0%, #f7fafc 24%, #f6f1e8 100%)",
+        background:
+          "linear-gradient(180deg, #edf5f8 0%, #f7fafc 24%, #f6f1e8 100%)",
         color: "#15324a",
         fontFamily: '"Segoe UI", "Trebuchet MS", sans-serif',
       }}
@@ -53,11 +69,26 @@ export default function App() {
         }}
       >
         <div style={{ maxWidth: 1400, margin: "0 auto" }}>
-          <h1 style={{ margin: "18px 0 12px", fontSize: "clamp(2.4rem, 5vw, 4.5rem)", lineHeight: 0.95 }}>
+          <h1
+            style={{
+              margin: "18px 0 12px",
+              fontSize: "clamp(2.4rem, 5vw, 4.5rem)",
+              lineHeight: 0.95,
+            }}
+          >
             Real-Time Engagement Dashboard
           </h1>
-          <p style={{ maxWidth: 760, fontSize: 18, lineHeight: 1.6, margin: 0, color: "rgba(246,251,255,0.86)" }}>
-            Watch the live camera session, inspect current health badges, and scroll through signal history without losing the main page context.
+          <p
+            style={{
+              maxWidth: 760,
+              fontSize: 18,
+              lineHeight: 1.6,
+              margin: 0,
+              color: "rgba(246,251,255,0.86)",
+            }}
+          >
+            Watch the live camera session, inspect current health badges, and
+            scroll through signal history
           </p>
         </div>
       </header>
@@ -88,17 +119,35 @@ export default function App() {
               style={{
                 padding: 22,
                 borderRadius: 28,
-                background: "linear-gradient(180deg, rgba(12,38,58,0.98), rgba(22,64,87,0.94))",
+                background:
+                  "linear-gradient(180deg, rgba(12,38,58,0.98), rgba(22,64,87,0.94))",
                 boxShadow: "0 24px 60px rgba(8, 24, 38, 0.24)",
                 color: "#f3fbff",
               }}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "flex-start", marginBottom: 18 }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 16,
+                  alignItems: "flex-start",
+                  marginBottom: 18,
+                }}
+              >
                 <div>
-                  <div style={{ fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(243,251,255,0.62)" }}>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      color: "rgba(243,251,255,0.62)",
+                    }}
+                  >
                     Camera Panel
                   </div>
-                  <div style={{ fontSize: 28, fontWeight: 700, marginTop: 4 }}>{panelTitle}</div>
+                  <div style={{ fontSize: 28, fontWeight: 700, marginTop: 4 }}>
+                    {panelTitle}
+                  </div>
                 </div>
                 <div style={{ fontSize: 14, color: "rgba(243,251,255,0.72)" }}>
                   {resolution.w} x {resolution.h}
@@ -164,8 +213,16 @@ export default function App() {
                       boxShadow: `0 0 14px ${status === "running" ? "#3ddc97" : "#f0b24f"}`,
                     }}
                   />
-                  <span style={{ fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                    {status === "running" ? "Live Video Feed" : "No Live Video Frame"}
+                  <span
+                    style={{
+                      fontSize: 12,
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {status === "running"
+                      ? "Live Video Feed"
+                      : "No Live Video Frame"}
                   </span>
                 </div>
 
@@ -177,7 +234,8 @@ export default function App() {
                     padding: 22,
                     display: "grid",
                     gap: 10,
-                    background: "linear-gradient(180deg, transparent, rgba(3,10,16,0.82))",
+                    background:
+                      "linear-gradient(180deg, transparent, rgba(3,10,16,0.82))",
                   }}
                 >
                   <div style={{ fontSize: 18, fontWeight: 700 }}>
@@ -185,8 +243,15 @@ export default function App() {
                       ? `Engagement ${latestFrame.model.engagement.toFixed(2)} | Intensity ${latestFrame.model.intensity.toFixed(2)}`
                       : "Waiting for the first encoded camera frame"}
                   </div>
-                  <div style={{ maxWidth: 580, lineHeight: 1.6, color: "rgba(243,251,255,0.78)" }}>
-                    The stream now arrives with the websocket metrics feed, so this panel can show the live camera session and the current model output at the same time.
+                  <div
+                    style={{
+                      maxWidth: 580,
+                      lineHeight: 1.6,
+                      color: "rgba(243,251,255,0.78)",
+                    }}
+                  >
+                    The stream maybe time delayed depending on your internet
+                    connection and hardware.
                   </div>
                 </div>
               </div>
@@ -202,12 +267,29 @@ export default function App() {
                 boxShadow: "0 24px 60px rgba(17, 43, 68, 0.12)",
               }}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "center", marginBottom: 18 }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 16,
+                  alignItems: "center",
+                  marginBottom: 18,
+                }}
+              >
                 <div>
-                  <div style={{ fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "#6f8598" }}>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      color: "#6f8598",
+                    }}
+                  >
                     Session Snapshot
                   </div>
-                  <div style={{ fontSize: 26, fontWeight: 700, marginTop: 4 }}>Current Metrics</div>
+                  <div style={{ fontSize: 26, fontWeight: 700, marginTop: 4 }}>
+                    Current Metrics
+                  </div>
                 </div>
                 <div
                   style={{
@@ -231,9 +313,18 @@ export default function App() {
                 }}
               >
                 <Badge label="FPS" value={fps.toFixed(1)} />
-                <Badge label="Capture Latency" value={`${(latency.capture * 1000).toFixed(1)} ms`} />
-                <Badge label="FaceMesh Latency" value={`${(latency.facemesh * 1000).toFixed(1)} ms`} />
-                <Badge label="Resolution" value={`${resolution.w}x${resolution.h}`} />
+                <Badge
+                  label="Capture Latency"
+                  value={`${(latency.capture * 1000).toFixed(1)} ms`}
+                />
+                <Badge
+                  label="FaceMesh Latency"
+                  value={`${(latency.facemesh * 1000).toFixed(1)} ms`}
+                />
+                <Badge
+                  label="Resolution"
+                  value={`${resolution.w}x${resolution.h}`}
+                />
                 <Badge label="Frames" value={frames.length} />
                 <Badge label="Status" value={status} />
               </div>
@@ -273,10 +364,19 @@ export default function App() {
             }}
           >
             <div style={{ marginBottom: 18 }}>
-              <div style={{ fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "#6f8598" }}>
+              <div
+                style={{
+                  fontSize: 12,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: "#6f8598",
+                }}
+              >
+                Scrollable Charts
+              </div>
+              <div style={{ fontSize: 28, fontWeight: 700, marginTop: 4 }}>
                 Signal History
               </div>
-              <div style={{ fontSize: 28, fontWeight: 700, marginTop: 4 }}>Scrollable Charts</div>
             </div>
 
             <div
@@ -290,12 +390,42 @@ export default function App() {
                 minHeight: 0,
               }}
             >
-              <SignalChart data={frames} dataKey="model.engagement" color="#2f9f7f" name="Engagement" />
-              <SignalChart data={frames} dataKey="signals.yaw" color="#3978b5" name="Yaw" />
-              <SignalChart data={frames} dataKey="signals.pitch" color="#e6842a" name="Pitch" />
-              <SignalChart data={frames} dataKey="signals.roll" color="#4d8f55" name="Roll" />
-              <SignalChart data={frames} dataKey="signals.avg_EAR" color="#d94d4d" name="EAR" />
-              <SignalChart data={frames} dataKey="signals.mouth_open" color="#3f6ee8" name="Mouth Open" />
+              <SignalChart
+                data={frames}
+                dataKey="model.engagement"
+                color="#2f9f7f"
+                name="Engagement"
+              />
+              <SignalChart
+                data={frames}
+                dataKey="signals.yaw"
+                color="#3978b5"
+                name="Yaw"
+              />
+              <SignalChart
+                data={frames}
+                dataKey="signals.pitch"
+                color="#e6842a"
+                name="Pitch"
+              />
+              <SignalChart
+                data={frames}
+                dataKey="signals.roll"
+                color="#4d8f55"
+                name="Roll"
+              />
+              <SignalChart
+                data={frames}
+                dataKey="signals.avg_EAR"
+                color="#d94d4d"
+                name="EAR"
+              />
+              <SignalChart
+                data={frames}
+                dataKey="signals.mouth_open"
+                color="#3f6ee8"
+                name="Mouth Open"
+              />
             </div>
           </aside>
         </div>

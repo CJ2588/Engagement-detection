@@ -1,6 +1,8 @@
 # Engagement Dashboard
 
-Cortality is a real-time engagement monitoring project that uses a webcam, MediaPipe face landmarks, handcrafted facial signals, and a TensorFlow model to estimate engagement and intensity live. The backend performs capture and inference, while the frontend displays the live video stream, session metrics, and scrolling signal charts.
+This is a real-time engagement monitoring project that uses a webcam, MediaPipe face landmarks, handcrafted facial signals, and a TensorFlow model to estimate engagement and intensity live. The backend performs capture and inference, while the frontend displays the live video stream, session metrics, and scrolling signal charts.
+
+![Cortality demo](./Engage_edited.gif)
 
 ## What It Does
 
@@ -75,13 +77,3 @@ The frontend expects the backend WebSocket at `ws://localhost:8000/ws`.
 - A working webcam is required.
 - Model files must exist in `Backend/models/`.
 - Video is streamed as compressed JPEG frames over WebSocket for simplicity.
-
-## Demo Media
-
-Yes, adding a short demo is a very good idea.
-
-- A short GIF is great for GitHub because people can see the project instantly without leaving the page.
-- A longer video is also useful if you want to show the live stream, chart updates, and overall interaction more clearly.
-- Best option: put a GIF near the top of the README and link to a full video below it.
-
-If you want, I can also rewrite this README in a more polished portfolio style with sections like `Motivation`, `Challenges`, and `Future Improvements`.
