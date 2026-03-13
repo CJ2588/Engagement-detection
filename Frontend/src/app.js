@@ -53,19 +53,6 @@ export default function App() {
         }}
       >
         <div style={{ maxWidth: 1400, margin: "0 auto" }}>
-          <div
-            style={{
-              display: "inline-block",
-              padding: "8px 12px",
-              borderRadius: 999,
-              background: "rgba(255,255,255,0.16)",
-              fontSize: 12,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-            }}
-          >
-            Cortality Monitor
-          </div>
           <h1 style={{ margin: "18px 0 12px", fontSize: "clamp(2.4rem, 5vw, 4.5rem)", lineHeight: 0.95 }}>
             Real-Time Engagement Dashboard
           </h1>
@@ -276,9 +263,13 @@ export default function App() {
               backdropFilter: "blur(10px)",
               border: "1px solid rgba(17, 49, 75, 0.08)",
               boxShadow: "0 24px 60px rgba(17, 43, 68, 0.12)",
-              minHeight: "calc(100vh - 180px)",
+              position: "sticky",
+              top: 24,
+              height: "calc(100vh - 48px)",
+              maxHeight: "calc(100vh - 48px)",
               display: "flex",
               flexDirection: "column",
+              overflow: "hidden",
             }}
           >
             <div style={{ marginBottom: 18 }}>
@@ -296,6 +287,7 @@ export default function App() {
                 display: "flex",
                 flexDirection: "column",
                 gap: 16,
+                minHeight: 0,
               }}
             >
               <SignalChart data={frames} dataKey="model.engagement" color="#2f9f7f" name="Engagement" />
