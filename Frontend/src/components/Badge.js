@@ -1,4 +1,5 @@
 export default function Badge({ label, value }) {
+  // Badges are intentionally simple because the parent layout handles grouping and spacing.
   return (
     <div
       style={{

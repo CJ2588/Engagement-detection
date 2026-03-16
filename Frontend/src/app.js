@@ -4,7 +4,9 @@ import Badge from "./components/Badge";
 import { connectWS } from "./utils/wsClient";
 
 export default function App() {
+  // Charts keep a rolling history of lightweight metric payloads only.
   const [frames, setFrames] = useState([]);
+  // The live JPEG frame is tracked separately so large base64 strings do not bloat chart state.
   const [videoFrame, setVideoFrame] = useState(null);
   const [fps, setFps] = useState(0);
   const [latency, setLatency] = useState({
@@ -21,6 +23,7 @@ export default function App() {
     const ws = connectWS((data) => {
       const { video_frame: incomingVideoFrame, ...chartFrame } = data;
 
+      // Keep the chart history bounded so the dashboard stays responsive over long sessions.
       setFrames((prev) => [...prev.slice(-99), chartFrame]);
       setVideoFrame(
         incomingVideoFrame
@@ -38,6 +41,7 @@ export default function App() {
       }
     });
 
+    // Close the socket if the dashboard unmounts or the dev server reloads.
     return () => ws.close();
   }, []);
 

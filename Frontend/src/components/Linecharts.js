@@ -9,6 +9,7 @@ import {
 } from "recharts";
 
 export default function SignalChart({ data, dataKey, color, name }) {
+  // Each card reserves vertical space so charts stay readable inside the scroll panel.
   return (
     <div
       style={{
@@ -35,23 +36,24 @@ export default function SignalChart({ data, dataKey, color, name }) {
       >
         {name}
       </div>
-      <div style={{ flex: 1, minHeight: 190 }}>
+      <div style={{git  flex: 1, minHeight: 190 }}>
         <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
-          <CartesianGrid stroke="rgba(58, 99, 132, 0.12)" vertical={false} />
-          <XAxis dataKey="timestamp" tick={{ fill: "#698195", fontSize: 12 }} />
-          <YAxis tick={{ fill: "#698195", fontSize: 12 }} width={42} />
-          <Tooltip />
-          <Line
-            type="monotone"
-            dataKey={dataKey}
-            stroke={color}
-            strokeWidth={3}
-            name={name}
-            dot={false}
-            isAnimationActive={false}
-          />
-        </LineChart>
+          <LineChart data={data}>
+            <CartesianGrid stroke="rgba(58, 99, 132, 0.12)" vertical={false} />
+            <XAxis dataKey="timestamp" tick={{ fill: "#698195", fontSize: 12 }} />
+            <YAxis tick={{ fill: "#698195", fontSize: 12 }} width={42} />
+            <Tooltip />
+            {/* Animations stay off so streaming updates do not reset the line on every frame. */}
+            <Line
+              type="monotone"
+              dataKey={dataKey}
+              stroke={color}
+              strokeWidth={3}
+              name={name}
+              dot={false}
+              isAnimationActive={false}
+            />
+          </LineChart>
         </ResponsiveContainer>
       </div>
     </div>
