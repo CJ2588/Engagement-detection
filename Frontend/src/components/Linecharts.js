@@ -36,7 +36,7 @@ export default function SignalChart({ data, dataKey, color, name }) {
       >
         {name}
       </div>
-      <div style={{git  flex: 1, minHeight: 190 }}>
+      <div style={{flex: 1, minHeight: 190 }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
             <CartesianGrid stroke="rgba(58, 99, 132, 0.12)" vertical={false} />
